@@ -1,9 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { KanbanStorageService } from '../../core/services/kanban-storage';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-onboarding',
-  imports: [],
-  templateUrl: './onboarding.html',
-  styleUrl: './onboarding.css',
+  standalone:true,
+  imports: [FormsModule],
+  templateUrl: './onboarding.component.html',
+  styleUrl: './onboarding.component.css',
 })
-export class Onboarding {}
+export class OnboardingComponent {
+  private storage = inject(KanbanStorageService);
+  private router = inject(Router);
+
+  name = signal('');
+
+
+  constructor(){
+    if(this.storage.getUserName()){
+      this.router.navigate(['/projects']);
+    }
+  }
+
+  continue():void{
+    const userName = this.name().trim();
+    if(!userName) return;
+
+    this.storage.saveUserName(userName);
+    this.router.navigate(['/projects']);
+    
+  }
+
+}
