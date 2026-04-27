@@ -8,8 +8,11 @@
       [ngModel]="projectName()"
       (ngModelChange)="projectName.set($event)"
     />
-
-    <button (click)="createProject()">Create Project</button>
+     <button 
+  (click)="createProject()" 
+  [disabled]="!projectName().trim()"
+> Create Project </button>
+    
   </div>
 
   <h2>Your Projects</h2>
