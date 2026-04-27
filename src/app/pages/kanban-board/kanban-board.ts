@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { KeyValuePipe } from '@angular/common';
+import { interval } from 'rxjs';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   CdkDragDrop,
   DragDropModule,
@@ -16,7 +17,7 @@ import { Task } from '../../core/models/task.model';
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [FormsModule, DragDropModule, KeyValuePipe],
+  imports: [FormsModule, DragDropModule, KeyValuePipe,RouterLink],
   templateUrl: './kanban-board.html',
   styleUrl: './kanban-board.css'
 })
@@ -50,12 +51,16 @@ export class KanbanBoardComponent {
     }
 
     this.project.set(selectedProject);
+    interval(1000).subscribe(() => {
+  this.project.update(project =>
+    project ? { ...project } : null
+  );
+});
   }
 
   getTasksByColumn(columnId: string): Task[] {
     return this.project()?.tasks.filter((task: Task) => task.columnId === columnId) ?? [];
   }
-
   addTask(): void {
     const title = this.taskTitle().trim();
     const currentProject = this.project();
@@ -199,4 +204,12 @@ export class KanbanBoardComponent {
     this.project.set(project);
     this.storage.updateProject(project);
   }
+
+  getCurrentColumnTime(task: Task): string {
+  const now = Date.now();
+
+  const currentTime = now - task.enteredAt;
+
+  return this.formatTime(currentTime);
+}
 }
