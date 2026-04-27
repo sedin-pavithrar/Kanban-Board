@@ -48,6 +48,9 @@
                 <div class="task-title">
                   {{ task.title }}
                 </div>
+                <p class="live-time">
+  Current: {{ getCurrentColumnTime(task) }}
+</p>
 
                 <button (click)="deleteTask(task.id)">Delete</button>
 
