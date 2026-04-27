@@ -1,1 +1,13 @@
-<p>onboarding works!</p>
+<div class="onboarding">
+  <h1>Welcome to Timed Kanban</h1>
+  <p>Enter your name to get started</p>
+
+  <input
+    type="text"
+    placeholder="Your name"
+    [ngModel]="name()"
+    (ngModelChange)="name.set($event)"
+  />
+
+  <button (click)="continue()">Continue</button>
+</div>
