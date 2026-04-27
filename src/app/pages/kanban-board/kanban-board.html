@@ -2,7 +2,7 @@
   <div class="board-page">
     <button class="back-btn" routerLink="/projects">← Back</button>
 
-    <h1>{{ project.name }}</h1>
+    <h1>{{ project.name }}</h1> 
 
     <div class="top-actions">
       <input
@@ -10,8 +10,9 @@
         placeholder="New task title"
         [ngModel]="taskTitle()"
         (ngModelChange)="taskTitle.set($event)"
-      />
-      <button (click)="addTask()">Add Task</button>
+      /> 
+      
+      <button (click)="addTask()"  [disabled]="!taskTitle().trim()">Add Task</button>
 
       <input
         type="text"
@@ -19,7 +20,7 @@
         [ngModel]="newColumnName()"
         (ngModelChange)="newColumnName.set($event)"
       />
-      <button (click)="addColumn()">Add Column</button>
+      <button (click)="addColumn()" [disabled]="!newColumnName().trim()">Add Column</button>
     </div>
 
     <div class="board">
@@ -45,9 +46,37 @@
           >
             @for (task of getTasksByColumn(column.id); track task.id) {
               <div class="task-card" cdkDrag>
-                <div class="task-title">
+                <!-- <div class="task-title">
                   {{ task.title }}
-                </div>
+                </div> -->
+                 <!-- <input
+      class="task-title-input"
+      [ngModel]="task.title"
+      (blur)="editTask(task.id, $any($event.target).value)"/> -->
+
+      @if (editingTaskId() === task.id) {
+  <input
+    class="task-title-input"
+    [ngModel]="editingTitle()"
+    (ngModelChange)="editingTitle.set($event)"
+  />
+
+  <!-- <button (click)="saveEdit(task.id)">Save</button> 
+    --> 
+  <button 
+  (click)="saveEdit(task.id)" 
+  [disabled]="!editingTitle().trim()"
+>
+  Save
+</button>
+  <button (click)="cancelEdit()">Cancel</button>
+} @else {
+  <div class="task-title">
+    {{ task.title }}
+  </div>
+
+  <button (click)="startEdit(task)">Edit</button>
+}
                 <!-- <p class="live-time">
   Current: {{ getCurrentColumnTime(task) }}
 </p> -->
