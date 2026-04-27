@@ -7,8 +7,8 @@ import { KanbanStorageService } from '../../core/services/kanban-storage';
   selector: 'app-project-list',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './project-list.component.html',
-  styleUrl: './project-list.component.css'
+  templateUrl: './project-list.html',
+  styleUrl: './project-list.css'
 })
 export class ProjectListComponent {
   storage = inject(KanbanStorageService);

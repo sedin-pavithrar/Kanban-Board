@@ -7,8 +7,8 @@ import { Router } from '@angular/router';
   selector: 'app-onboarding',
   standalone:true,
   imports: [FormsModule],
-  templateUrl: './onboarding.component.html',
-  styleUrl: './onboarding.component.css',
+  templateUrl: './onboarding.html',
+  styleUrl: './onboarding.css',
 })
 export class OnboardingComponent {
   private storage = inject(KanbanStorageService);

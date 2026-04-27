@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { KeyValuePipe } from '@angular/common';
 import {
   CdkDragDrop,
   DragDropModule,
@@ -15,9 +16,9 @@ import { Task } from '../../core/models/task.model';
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [FormsModule, DragDropModule],
-  templateUrl: './kanban-board.component.html',
-  styleUrl: './kanban-board.component.css'
+  imports: [FormsModule, DragDropModule, KeyValuePipe],
+  templateUrl: './kanban-board.html',
+  styleUrl: './kanban-board.css'
 })
 export class KanbanBoardComponent {
   private route = inject(ActivatedRoute);
