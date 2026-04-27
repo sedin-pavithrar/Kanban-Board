@@ -17,7 +17,7 @@ import { Task } from '../../core/models/task.model';
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [FormsModule, DragDropModule, KeyValuePipe,RouterLink],
+  imports: [FormsModule, DragDropModule, KeyValuePipe, RouterLink],
   templateUrl: './kanban-board.html',
   styleUrl: './kanban-board.css'
 })
@@ -30,6 +30,9 @@ export class KanbanBoardComponent {
 
   taskTitle = signal('');
   newColumnName = signal('');
+
+  editingTaskId = signal<string | null>(null);
+  editingTitle = signal('');
 
   connectedDropLists = computed(() =>
     this.project()?.columns.map((column) => column.id) ?? []
@@ -51,16 +54,18 @@ export class KanbanBoardComponent {
     }
 
     this.project.set(selectedProject);
+
     interval(1000).subscribe(() => {
-  this.project.update(project =>
-    project ? { ...project } : null
-  );
-});
+      this.project.update(project =>
+        project ? { ...project } : null
+      );
+    });
   }
 
   getTasksByColumn(columnId: string): Task[] {
     return this.project()?.tasks.filter((task: Task) => task.columnId === columnId) ?? [];
   }
+
   addTask(): void {
     const title = this.taskTitle().trim();
     const currentProject = this.project();
@@ -94,6 +99,40 @@ export class KanbanBoardComponent {
     };
 
     this.saveProject(updatedProject);
+  }
+
+  editTask(taskId: string, newTitle: string): void {
+    const currentProject = this.project();
+    const title = newTitle.trim();
+
+    if (!currentProject || !title) return;
+
+    const updatedProject = {
+      ...currentProject,
+      tasks: currentProject.tasks.map(task =>
+        task.id === taskId
+          ? { ...task, title }
+          : task
+      )
+    };
+
+    this.saveProject(updatedProject);
+  }
+
+  startEdit(task: Task): void {
+    this.editingTaskId.set(task.id);
+    this.editingTitle.set(task.title);
+  }
+
+  saveEdit(taskId: string): void {
+    this.editTask(taskId, this.editingTitle());
+    this.editingTaskId.set(null);
+    this.editingTitle.set('');
+  }
+
+  cancelEdit(): void {
+    this.editingTaskId.set(null);
+    this.editingTitle.set('');
   }
 
   drop(event: CdkDragDrop<Task[]>, newColumnId: string): void {
@@ -206,10 +245,9 @@ export class KanbanBoardComponent {
   }
 
   getCurrentColumnTime(task: Task): string {
-  const now = Date.now();
+    const now = Date.now();
+    const currentTime = now - task.enteredAt;
 
-  const currentTime = now - task.enteredAt;
-
-  return this.formatTime(currentTime);
-}
+    return this.formatTime(currentTime);
+  }
 }
