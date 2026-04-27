@@ -1,1 +1,73 @@
-<p>kanban-board works!</p>
+@if (project(); as project) {
+  <div class="board-page">
+    <button class="back-btn" routerLink="/projects">← Back</button>
+
+    <h1>{{ project.name }}</h1>
+
+    <div class="top-actions">
+      <input
+        type="text"
+        placeholder="New task title"
+        [ngModel]="taskTitle()"
+        (ngModelChange)="taskTitle.set($event)"
+      />
+      <button (click)="addTask()">Add Task</button>
+
+      <input
+        type="text"
+        placeholder="New column name"
+        [ngModel]="newColumnName()"
+        (ngModelChange)="newColumnName.set($event)"
+      />
+      <button (click)="addColumn()">Add Column</button>
+    </div>
+
+    <div class="board">
+      @for (column of project.columns; track column.id) {
+        <div class="column">
+          <div class="column-header">
+            <h2>{{ column.name }}</h2>
+
+            @if (!column.isProtected) {
+              <button class="delete-column" (click)="deleteColumn(column.id)">
+                Delete
+              </button>
+            }
+          </div>
+
+          <div
+            class="task-list"
+            cdkDropList
+            [id]="column.id"
+            [cdkDropListData]="getTasksByColumn(column.id)"
+            [cdkDropListConnectedTo]="connectedDropLists()"
+            (cdkDropListDropped)="drop($event, column.id)"
+          >
+            @for (task of getTasksByColumn(column.id); track task.id) {
+              <div class="task-card" cdkDrag>
+                <div class="task-title">
+                  {{ task.title }}
+                </div>
+
+                <button (click)="deleteTask(task.id)">Delete</button>
+
+                @if (task.columnId === 'completed') {
+                  <div class="stats">
+                    <h4>Time Breakdown</h4>
+
+                    @for (entry of task.timeSpent | keyvalue; track entry.key) {
+                      <p>
+                        {{ getColumnName(entry.key) }}:
+                        {{ formatTime(entry.value) }}
+                      </p>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
