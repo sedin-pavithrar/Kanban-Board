@@ -3,6 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { KanbanStorageService } from '../../core/services/kanban-storage';
 import { Router } from '@angular/router';
 
+
+// Ask user name
+// Save username
+// Redirect to project dashboard
+// Prevent already logged-in users from seeing onboarding again
+
 @Component({
   selector: 'app-onboarding',
   standalone:true,
@@ -16,7 +22,6 @@ export class OnboardingComponent {
 
   name = signal('');
 
-
   constructor(){
     if(this.storage.getUserName()){
       this.router.navigate(['/projects']);
@@ -26,7 +31,6 @@ export class OnboardingComponent {
   continue():void{
     const userName = this.name().trim();
     if(!userName) return;
-
     this.storage.saveUserName(userName);
     this.router.navigate(['/projects']);
     

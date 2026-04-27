@@ -9,5 +9,9 @@
     (ngModelChange)="name.set($event)"
   />
 
-  <button (click)="continue()">Continue</button>
+  <!-- <button (click)="continue()">Continue</button> -->
+   <button 
+  (click)="continue()"
+  [disabled]="!name().trim()"
+>Continue</button>
 </div>
