@@ -16,7 +16,7 @@ phases:
       - pip3 install semgrep
 
       # Install project dependencies using clean install (SCA will run on package-lock.json)
-      - npm ci
+      - npm ci --legacy-peer-deps
 
   pre_build:
     commands:
